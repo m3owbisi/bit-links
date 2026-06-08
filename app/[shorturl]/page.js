@@ -11,7 +11,7 @@ export default async function Page({ params }) {
   if (doc) {
     redirect(doc.url);
   } else {
-    redirect(`${process.env.NEXT_PUBLIC_HOST}`);
+    redirect(process.env.NEXT_PUBLIC_HOST || "/");
   }
   return <div>my post: {shorturl}</div>;
 }

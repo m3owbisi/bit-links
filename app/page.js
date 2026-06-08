@@ -6,13 +6,11 @@ import Link from "next/link";
 const black = localFont({
   src: "./fonts/Poppins-Black.ttf",
   variable: "--font-black",
-  subsets: ["latin"],
   weight: "100 900",
 });
 const semibold = localFont({
   src: "./fonts/Poppins-SemiBold.ttf",
   variable: "--font-semibold",
-  subsets: ["latin"],
   weight: "100 900",
 });
 

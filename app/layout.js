@@ -16,7 +16,6 @@ const geistMono = Geist_Mono({
 const poppins = localFont({
   src: "./fonts/Poppins-ExtraBold.ttf",
   variable: "--font-poppins",
-  subsets: ["latin"],
   weight: "100 900",
 });
 

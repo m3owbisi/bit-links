@@ -3,7 +3,7 @@ import React from "react";
 import { useState } from "react";
 import Link from "next/link";
 
-const shorten = () => {
+const Shorten = () => {
   const [url, seturl] = useState("");
   const [shorturl, setshorturl] = useState("");
   const [generated, setgenerated] = useState("");
@@ -25,15 +25,32 @@ const shorten = () => {
     };
 
     fetch("/api/generate", requestOptions)
-      .then((response) => response.json())
-      .then((result) => {
-        console.log(result);
-        setgenerated(`${process.env.NEXT_PUBLIC_HOST}/${shorturl}`);
-        alert(result.message);
-        seturl("");
-        setshorturl("");
+      .then(async (response) => {
+        const contentType = response.headers.get("content-type");
+        if (contentType && contentType.includes("application/json")) {
+          const data = await response.json();
+          return { ok: response.ok, data };
+        }
+        const text = await response.text();
+        throw new Error(text || `Request failed with status ${response.status}`);
       })
-      .catch((error) => console.error(error));
+      .then(({ ok, data }) => {
+        console.log(data);
+        if (ok && data.success) {
+          const host = process.env.NEXT_PUBLIC_HOST || window.location.origin;
+          const hostWithSlash = host.endsWith("/") ? host : `${host}/`;
+          setgenerated(`${hostWithSlash}${shorturl}`);
+          alert(data.message);
+          seturl("");
+          setshorturl("");
+        } else {
+          alert(data.message || "Failed to generate URL.");
+        }
+      })
+      .catch((error) => {
+        console.error("Error generating URL:", error);
+        alert("An error occurred: " + error.message);
+      });
   };
   return (
     <div className="mx-auto max-w-lg bg-purple-100 my-16 p-8 rounded-lg flex flex-col gap-4">
@@ -92,4 +109,4 @@ const shorten = () => {
   );
 };
 
-export default shorten;
+export default Shorten;
